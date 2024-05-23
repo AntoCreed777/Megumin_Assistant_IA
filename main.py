@@ -31,22 +31,6 @@ def complete(api_prompt,input: dict,model: Models):
     messages.append({"role": "system", "content": response.choices[0].message['content']})
     return response
 
-def transcribir_audio():
-    recognizer = sr.Recognizer()
-    
-    with sr.Microphone() as source:
-        print("Por favor, habla ahora...")
-        audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
-        
-        try:
-            return recognizer.recognize_google(audio, language='es-ES')
-        except sr.UnknownValueError:
-            print("No se pudo entender el audio")
-            return ""
-        except sr.RequestError as e:
-            print(f"Error en el servicio de Google Speech Recognition; {e}")
-            return ""
-
 def main():
     #Leyendo archivo de personalidad
     api_prompt = getPrompt(archivo_prompt)
