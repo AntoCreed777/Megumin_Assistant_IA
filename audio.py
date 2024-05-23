@@ -2,6 +2,11 @@ import pyaudio
 import speech_recognition as sr
 import wave
 import audioop
+from elevenlabs import Voice, VoiceSettings, play
+from elevenlabs.client import ElevenLabs
+import os
+
+client = ElevenLabs(api_key=os.environ.get("ELEVENLABS_API_KEY"))
 
 def transcribir_audio():
     recognizer = sr.Recognizer()
@@ -70,12 +75,18 @@ def grabar_audio(): #Funcion extraida de https://github.com/GojiBL/wAIfu
     wf.writeframes(b''.join(frames))
     wf.close()
     
+def hablar(texto):
+    audio = client.generate(
+    text=texto,
+    voice=Voice(
+        voice_id="jZQup0S2SnymAZXAOLOU",
+        settings=VoiceSettings(stability=0.71, similarity_boost=0.5, style=0.0, use_speaker_boost=True)
+    )
+    )
+    play(audio)
+    
 def main():
-    try:
-        grabar_audio()
-        transcribir_audio()
-    except KeyboardInterrupt:
-        print("\nPrograma finalizado por el usuario.")
+    hablar("Hola, soy un bot de prueba")
 
 if __name__ == "__main__":
     main()

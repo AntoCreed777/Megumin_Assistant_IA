@@ -2,7 +2,7 @@ from enum import Enum
 import toml
 import openai
 import speech_recognition as sr
-from gtts import gTTS
+
 import os
 import audio
 import pygame
@@ -47,33 +47,6 @@ def transcribir_audio():
             print(f"Error en el servicio de Google Speech Recognition; {e}")
             return ""
 
-def hablar(texto):
-    tts = gTTS(text=texto, lang='es')
-    tts.save("output.mp3")
-    
-    pygame.init()
-    pygame.mixer.init()
-    pygame.mixer.music.load("output.mp3")
-    
-    try:
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-    except KeyboardInterrupt:
-        pygame.mixer.music.stop()
-        print("Reproducción de audio detenida")
-        exit()
-    except Exception as e:
-        print(f"Error al reproducir el audio: {e}")
-        exit()
-    finally:
-        pygame.mixer.music.stop()
-        pygame.mixer.quit()
-    
-    #engine = pyttsx3.init()
-    #engine.say(texto)
-    #engine.runAndWait()
-    
 def main():
     #Leyendo archivo de personalidad
     api_prompt = getPrompt(archivo_prompt)
@@ -83,7 +56,7 @@ def main():
             input_voice = audio.transcribir_audio()
             completed = complete(api_prompt,input_voice,Models.GPT4) #cambiar el modelo aquí
             print(completed.choices[0].message['content'])
-            hablar(completed.choices[0].message['content'])
+            audio.hablar(completed.choices[0].message['content'])
     except KeyboardInterrupt:
         print("Saliendo del programa...")
         exit()
